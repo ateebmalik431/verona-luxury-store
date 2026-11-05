@@ -2599,6 +2599,7 @@ footer p{
         id="email"
         type="email"
         placeholder="Your email address"
+        autocomplete="email"
         required
       >
 
@@ -2672,42 +2673,50 @@ footer p{
     <div class="auth-body">
 
       <form class="auth-form active" id="signinForm" onsubmit="signIn(event)">
-        <div class="auth-field">
-          <label>EMAIL ADDRESS</label>
-          <input id="loginEmail" type="email" placeholder="your@email.com" autocomplete="email" required>
-        </div>
 
-        <div class="auth-field">
-          <label>PASSWORD</label>
-          <input id="loginPassword" type="password" placeholder="Your password" autocomplete="current-password" minlength="6" required>
-        </div>
+    <div class="auth-field">
+        <label for="email">EMAIL ADDRESS</label>
+        <input id="loginEmail" type="email" placeholder="your@email.com" autocomplete="email" required>
+    </div>
 
-        <button class="btn auth-submit" type="submit">SIGN IN</button>
+    <div class="auth-field">
+        <label for="password">PASSWORD</label>
+        <input id="loginPassword" type="password" placeholder="Your password" autocomplete="current-password" minlength="6" required>
+    </div>
 
-        <div class="auth-note">
-          New to VÉRONA?
-          <span class="auth-switch" onclick="showAuthTab('signup')">Create an account</span>
-        </div>
-      </form>
+    <div class="auth-note" style="text-align:right; margin:5px 0 15px;">
+        <span class="auth-switch" onclick="sendPasswordReset()">
+            Forgot Password?
+        </span>
+    </div>
+
+    <button class="btn auth-submit" type="submit">SIGN IN</button>
+
+    <div class="auth-note">
+        New to VÉRONA?
+        <span class="auth-switch" onclick="showAuthTab('signup')">Create an account</span>
+    </div>
+
+</form>
 
       <form class="auth-form" id="signupForm" onsubmit="signUp(event)">
         <div class="auth-field">
-          <label>FULL NAME</label>
+          <label for="fullname">FULL NAME</label>
           <input id="signupName" type="text" placeholder="Your full name" autocomplete="name" required>
         </div>
 
         <div class="auth-field">
-          <label>EMAIL ADDRESS</label>
+          <label for="email">EMAIL ADDRESS</label>
           <input id="signupEmail" type="email" placeholder="your@email.com" autocomplete="email" required>
         </div>
 
         <div class="auth-field">
-          <label>PASSWORD</label>
+          <label for="signupPassword">PASSWORD</label>
           <input id="signupPassword" type="password" placeholder="Create a password" autocomplete="new-password" minlength="6" required>
         </div>
 
         <div class="auth-field">
-          <label>CONFIRM PASSWORD</label>
+          <label for="confirmpassword">CONFIRM PASSWORD</label>
           <input id="signupConfirm" type="password" placeholder="Confirm your password" autocomplete="new-password" minlength="6" required>
         </div>
 
@@ -2830,7 +2839,7 @@ footer p{
 
         <div class="field">
 
-          <label>
+          <label for="customername">
             FULL NAME
           </label>
 
@@ -2846,7 +2855,7 @@ footer p{
 
         <div class="field">
 
-          <label>
+          <label for="phone">
             PHONE NUMBER
           </label>
 
@@ -2862,7 +2871,7 @@ footer p{
 
         <div class="field">
 
-          <label>
+          <label for="customerEmail">
             EMAIL ADDRESS
           </label>
 
@@ -2878,7 +2887,7 @@ footer p{
 
         <div class="field">
 
-          <label>
+          <label for="city">
             CITY
           </label>
 
@@ -2894,7 +2903,7 @@ footer p{
 
         <div class="field full">
 
-          <label>
+          <label for="address">
             DELIVERY ADDRESS
           </label>
 
@@ -2909,7 +2918,7 @@ footer p{
 
         <div class="field full">
 
-          <label>
+          <label for="paymentMethod">
             PAYMENT METHOD
           </label>
 
@@ -3269,11 +3278,11 @@ window.addEventListener("load",()=>{
 
   setTimeout(()=>{
 
-    document.getElementById("loader").style.opacity="0";
-
+    const loader = document.getElementById("loader");
+if (loader) loader.style.opacity = "0";
     setTimeout(()=>{
 
-      document.getElementById("loader").style.display="none";
+     if (loader) loader.style.display = "none";
 
     },800);
 
@@ -4291,7 +4300,7 @@ function subscribe(event){
   const email=
   document
   .getElementById("email")
-  .val5ue;
+  .value;
 
 
   if(!email)return;
@@ -4563,8 +4572,8 @@ document.addEventListener(
    Add your Supabase Project URL and Publishable Key below.
    Never place a Supabase secret/service_role key in this file.
 ========================================= */
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-const SUPABASE_PUBLISHABLE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+const SUPABASE_URL = "https://sqrctxqcqmybdjufnraw.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_xe0MqCMX-0GPFRqH5USyHg_1vXoJEmA";
 let supabaseClient = null;
 
 if (
@@ -4617,7 +4626,7 @@ async function getCurrentUser() {
   const { data, error } = await supabaseClient.auth.getUser();
   if (error) return null;
   return data.user || null;
-}     
+}
 
 async function refreshAuthView() {
   if (!supabaseClient) return;
@@ -4671,47 +4680,113 @@ async function signUp(event) {
   }
 }
 
-async function signIn(event) {
-  event.preventDefault();
-  if (!supabaseClient) return supabaseSetupMessage();
 
-  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-  const password = document.getElementById("loginPassword").value;
-  const button = document.querySelector("#signinForm button[type='submit']");
-  button.disabled = true;
-  button.textContent = "SIGNING IN…";
+async function signIn(event) {
+    event.preventDefault();
+    if (!supabaseClient) return supabaseSetupMessage();
+
+    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value;
+    const button = document.querySelector("#signinForm button[type='submit']");
+    button.disabled = true;
+    button.textContent = "SIGNING IN…";
+
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
+        if (error) throw error;
+
+        document.getElementById("signinForm").reset();
+        showAccount(data.user);
+        toast("Welcome back to VÉRONA.");
+
+    } catch (error) {
+        toast(error.message || "Sign in failed. Check your details.");
+
+    } finally {
+        button.disabled = false;
+        button.textContent = "SIGN IN";
+    }
+}
+
+
+// FORGOT PASSWORD FUNCTION
+async function sendPasswordReset() {
+  async function saveNewPassword() {
+  const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (!newPassword || !confirmPassword) {
+    toast("Please fill both password fields.");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    toast("Passwords do not match.");
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    toast("Password must be at least 6 characters.");
+    return;
+  }
 
   try {
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
-      email,
-      password
+    const { error } = await supabaseClient.auth.updateUser({
+      password: newPassword
     });
+
     if (error) throw error;
-    document.getElementById("signinForm").reset();
-    showAccount(data.user);
-    toast("Welcome back to VÉRONA.");
+
+    toast("Password updated successfully!");
+    document.getElementById("passwordResetBox").style.display = "none";
   } catch (error) {
-    toast(error.message || "Sign in failed. Check your details.");
-  } finally {
-    button.disabled = false;
-    button.textContent = "SIGN IN";
+    toast(error.message || "Could not update password.");
   }
 }
+    if (!supabaseClient) return supabaseSetupMessage();
+
+    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+
+    if (!email) {
+        toast("Please enter your email address first.");
+        document.getElementById("loginEmail").focus();
+        return;
+    }
+
+    try {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+           redirectTo: window.location.origin + window.location.pathname + "#reset-password"
+        });
+
+        if (error) throw error;
+
+        toast("Password reset link sent! Check your email.");
+
+    } catch (error) {
+        toast(error.message || "Could not send password reset email.");
+    }
+}
+
 
 async function showAccount(user = null) {
-  user = user || await getCurrentUser();
-  if (!user) return showAuthTab("signin");
+    user = user || await getCurrentUser();
+    if (!user) return showAuthTab("signin");
 
-  const name = user.user_metadata?.full_name || user.email?.split("@")[0] || "VÉRONA Client";
-  document.getElementById("signinForm").classList.remove("active");
-  document.getElementById("signupForm").classList.remove("active");
-  document.getElementById("signInTab").classList.remove("active");
-  document.getElementById("signUpTab").classList.remove("active");
-  document.getElementById("accountBox").classList.add("active");
-  document.getElementById("accountName").textContent = name;
-  document.getElementById("accountEmail").textContent = user.email || "";
-  document.getElementById("accountAvatar").textContent = name.charAt(0).toUpperCase();
+    const name = user.user_metadata?.full_name || user.email?.split("@")[0] || "VÉRONA Client";
+
+    document.getElementById("signinForm").classList.remove("active");
+    document.getElementById("signupForm").classList.remove("active");
+    document.getElementById("signInTab").classList.remove("active");
+    document.getElementById("signUpTab").classList.remove("active");
+    document.getElementById("accountBox").classList.add("active");
+    document.getElementById("accountName").textContent = name;
+    document.getElementById("accountEmail").textContent = user.email || "";
+    document.getElementById("accountAvatar").textContent = name.charAt(0).toUpperCase();
 }
+
 
 async function signOut() {
   if (!supabaseClient) return supabaseSetupMessage();
@@ -4760,7 +4835,15 @@ async function initializeVerona() {
 
   if (supabaseClient) {
     const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((_event, session) => {
-      if (session?.user && document.getElementById("authOverlay").classList.contains("open")) {
+     if (_event === "PASSWORD_RECOVERY") {
+  console.log("VÉRONA: Password recovery detected!");
+
+  const resetBox = document.getElementById("passwordResetBox");
+
+  if (resetBox) {
+    resetBox.style.display = "flex";
+  }
+} if (session?.user && document.getElementById("authOverlay").classList.contains("open")) {
         showAccount(session.user);
       }
     });
@@ -4776,6 +4859,41 @@ async function initializeVerona() {
 initializeVerona();
 
 </script>
+<script type="module">
+  import { createClient } from
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
+  const MODULE_SUPABASE_URL = 'https://sqrctxqcqmybdjufnraw.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_xe0MqCMX-0GPFRqH5USyHg_1vXoJEmA';
+
+  const supabase = createClient(
+   MODULE_SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  window.supabaseClient = supabase;
+
+  console.log('Verona Supabase client initialized!');
+  supabaseClient
+  .from("products")
+  .select("id")
+  .limit(1)
+  .then(({ data, error }) => {
+    console.log("DATABASE TEST:", { data, error });
+  });
+</script>
+<div id="passwordResetBox" style="display:none; position:fixed; inset:0; z-index:99999; background:#050505; align-items:center; justify-content:center; padding:20px;">
+  <div style="width:100%; max-width:400px; padding:30px; background:#111; border:1px solid #d8b66c; border-radius:12px; color:white;">
+    <h2 style="color:#d8b66c;">Reset Your Password</h2>
+
+    <input id="newPassword" type="password" placeholder="New Password" autocomplete="new-password" style="width:100%; padding:14px; margin:10px 0;">
+
+    <input id="confirmPassword" type="password" placeholder="Confirm Password" autocomplete="new-password" style="width:100%; padding:14px; margin:10px 0;">
+
+    <button onclick="saveNewPassword()" style="width:100%; padding:14px; background:#d8b66c; border:0; cursor:pointer;">
+      Update Password
+    </button>
+  </div>
+</div>
 </body>
 </html>
